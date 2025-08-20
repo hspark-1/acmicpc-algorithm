@@ -5,53 +5,44 @@ import java.io.*;
 // The main method must be in a class named "Main".
 class Main {
     static int N;
-    static long[] coordiX, coordiY;
+    static long[][] coordi;
     static long totalX;
     static long totalY;
     static double min;
 
-    public static void solution(String[] bitmask) {
-        long startX = 0, startY = 0;
-        for (int i=0; i<bitmask.length; i++) {
-            if (bitmask[i].equals("1")) {
-                startX += coordiX[i];
-                startY += coordiY[i];
-            }
-        }
-        long endX = totalX - startX, endY = totalY - startY;
-        min = Math.min(min, Math.sqrt((endX - startX) * (endX - startX) + (endY - startY) * (endY - startY)));
-    }
-    
-    public static void combination(String s, int one, int zero) {
-        if (s.length() == N) {
-            solution(s.split(""));
+    private static void solution(int idx, int cnt, long startX, long startY) {
+        if (idx == N) return;
+        if (cnt == N/2) {
+            long dx = (totalX - startX) - startX, dy = (totalY - startY) - startY;
+            min = Math.min(min, Math.sqrt(dx*dx + dy*dy));
             return;
         }
 
-        if (one < N/2) combination(s+"1", one+1, zero);
-        if (zero < N/2) combination(s+"0", one, zero+1);
+        solution(idx+1, cnt+1, startX+coordi[idx][0], startY+coordi[idx][1]);
+        solution(idx+1, cnt, startX, startY);
     }
     
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st;
         int T = Integer.parseInt(br.readLine());
         while (T > 0) {
             min = Double.MAX_VALUE;
             N = Integer.parseInt(br.readLine());
-            coordiX = new long[N];
-            coordiY = new long[N];
+            coordi = new long[N][2];
+            
             totalX = 0;
             totalY = 0;
             
             for (int i=0; i<N; i++) {
-                StringTokenizer st = new StringTokenizer(br.readLine());
-                coordiX[i] = Long.parseLong(st.nextToken());
-                coordiY[i] = Long.parseLong(st.nextToken());
-                totalX += coordiX[i];
-                totalY += coordiY[i];
+                st = new StringTokenizer(br.readLine());
+                coordi[i][0] = Long.parseLong(st.nextToken());
+                coordi[i][1] = Long.parseLong(st.nextToken());
+                totalX += coordi[i][0];
+                totalY += coordi[i][1];
             }
 
-            combination("", 0, 0);
+            solution(0, 0, 0L, 0L);
             System.out.println(min);
             T--;
         }
