@@ -11,13 +11,14 @@ class Main {
     static double min;
 
     private static void solution(int idx, int cnt, long startX, long startY) {
-        if (idx == N) return;
+        if (cnt + (N - idx) < N/2) return;
         if (cnt == N/2) {
             long dx = (totalX - startX) - startX, dy = (totalY - startY) - startY;
             min = Math.min(min, Math.sqrt(dx*dx + dy*dy));
             return;
         }
 
+        if (idx == N) return;
         solution(idx+1, cnt+1, startX+coordi[idx][0], startY+coordi[idx][1]);
         solution(idx+1, cnt, startX, startY);
     }
