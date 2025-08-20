@@ -13,22 +13,20 @@ class Main {
 
         int size = (int) (b - a + 1);
         boolean[] isSquareFree = new boolean[size];
-        
-        Arrays.fill(isSquareFree, true);
 
         for (long i = 2; i * i <= b; i++) {
             long square = i * i;
             
-            long start = (a + square - 1) / square;
+            long start = ((a + square - 1) / square) * square;
 
-            for (long j = start; j * square <= b; j++) {
-                isSquareFree[(int) (j * square - a)] = false;
+            for (long j = start; j <= b; j += square) {
+                isSquareFree[(int) (j - a)] = true;
             }
         }
 
         int count = 0;
         for (boolean isFree : isSquareFree) {
-            if (isFree) {
+            if (!isFree) {
                 count++;
             }
         }
